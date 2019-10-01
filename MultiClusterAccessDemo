@@ -40,22 +40,24 @@ d.  Update context with
       kubectl config --kubeconfig=demo-multi-cluster.yaml set-context exp-scratch --cluster=scratch --namespace=default --user=experimenter
       
 e.  set Any context as current
-    kubectl config --kubeconfig-=demo-multi-cluster.yaml use-context=dev-frontend
+      kubectl config --kubeconfig-=demo-multi-cluster.yaml use-context=dev-frontend
     
 f.  verify the  context set
-    kubectl config --kube-config=demo-multi-cluster.yaml --minify
+     kubectl config --kube-config=demo-multi-cluster.yaml --minify
 
 g. Create KUBECONFIG env variable if not already exists and add demo-multi-cluster.yaml to it
-    export KUBECONFIG=$KUBECONFIG:demo-multip-cluster.yaml
-    // verify the result with 
-     kubectl config view 
-      kubectl config view --minify
+       export KUBECONFIG=$KUBECONFIG:demo-multi-cluster.yaml
+      // verify the result with 
+       kubectl config view 
+       kubectl config view --minify
 h. Append  ~/.kube/config to  KUBECONFIG env variable
-   export KUBECONFIG=$KUBECONFIG:~/.kube/config
-   //verify that the final config is merged
-   kubectl config view
-   //verify the currnet context set
-   kubectl config view --minify
+     export KUBECONFIG=$KUBECONFIG:~/.kube/config
+     //verify that the final config is merged
+     kubectl config view
+     //verify the currnet context set
+     kubectl config view --minify
+     
+
     
     
     
