@@ -1,0 +1,49 @@
+Create config for multiple context
+a. Start with skeleton  demo-multi-cluster.yaml
+              apiVersion: v1
+              kind: Config
+              preferences: {}
+
+              clusters:
+              - cluster:
+                name: development
+              - cluster:
+                name: scratch
+
+              users:
+              - name: developer
+              - name: experimenter
+
+              contexts:
+              - context:
+                name: dev-frontend
+              - context:
+                name: dev-storage
+              - context:
+                name: exp-scratch
+
+b.  Add servers to respective cluster  
+     // Add server with authentication with certificate in development cluster
+      kubectl config --kubeconfig=demo-multi-cluster.yaml set-cluster development --server=http://some-ip --certificate-authority=some-ca-file
+      // add server with authentication with credententials in scratch cluster
+      kubectl config --kubeconfig=demo-multi-cluster set cluster scratch --server=http://some-other-ip --insecure-skip-tls-verify
+  // verify changes
+     kubectl config --kubeconfig=demo-multi-cluster.yaml view
+
+c.  Add user details
+      kubectl config --kubeconfig=multi-demo-cluster.yaml set-credentials developer --client-certificate=fake-cert-file --client-key=fake-key-seefile
+      kubectl config --kubeconfig=multi-demo-cluster.yaml set-credentials experimenter --username=$USERNAME --password=$PASSWORD
+
+d.  Update context with 
+      kubectl config --kubeconfig=demo-multi-cluster.yaml set-context dev-frontend --cluster=development --namespace=frontend --user=developer
+      kubectl config --kubeconfig=demo-multi-cluster.yaml set-context dev-storage --cluster=development --namespace=storage --user=developer
+      kubectl config --kubeconfig=demo-multi-cluster.yaml set-context exp-scratch --cluster=scratch --namespace=default --user=experimenter
+      
+e.  set Any context as current
+    kubectl config --kubeconfig-=demo-multi-cluster.yaml use-context=dev-frontend
+    
+f.  verify the  context set
+    kubectl config --kube-config=demo-multi-cluster.yaml --minify
+    
+    
+    
