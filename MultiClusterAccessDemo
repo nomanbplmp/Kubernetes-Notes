@@ -26,13 +26,13 @@ b.  Add servers to respective cluster
      // Add server with authentication with certificate in development cluster
       kubectl config --kubeconfig=demo-multi-cluster.yaml set-cluster development --server=http://some-ip --certificate-authority=some-ca-file
       // add server with authentication with credententials in scratch cluster
-      kubectl config --kubeconfig=demo-multi-cluster set cluster scratch --server=http://some-other-ip --insecure-skip-tls-verify
+      kubectl config --kubeconfig=demo-multi-cluster set-cluster scratch --server=http://some-other-ip --insecure-skip-tls-verify
   // verify changes
      kubectl config --kubeconfig=demo-multi-cluster.yaml view
 
 c.  Add user details
-      kubectl config --kubeconfig=multi-demo-cluster.yaml set-credentials developer --client-certificate=fake-cert-file --client-key=fake-key-seefile
-      kubectl config --kubeconfig=multi-demo-cluster.yaml set-credentials experimenter --username=$USERNAME --password=$PASSWORD
+      kubectl config --kubeconfig=demo-multi-cluster.yaml set-credentials developer --client-certificate=fake-cert-file --client-key=fake-key-seefile
+      kubectl config --kubeconfig=demo-multi-cluster.yaml set-credentials experimenter --username=username --password=password
 
 d.  Update context with 
       kubectl config --kubeconfig=demo-multi-cluster.yaml set-context dev-frontend --cluster=development --namespace=frontend --user=developer
@@ -44,6 +44,22 @@ e.  set Any context as current
     
 f.  verify the  context set
     kubectl config --kube-config=demo-multi-cluster.yaml --minify
+
+g. Create KUBECONFIG env variable if not already exists and add demo-multi-cluster.yaml to it
+    export KUBECONFIG=$KUBECONFIG:demo-multip-cluster.yaml
+    // verify the result with 
+     kubectl config view 
+      kubectl config view --minify
+h. Append  ~/.kube/config to  KUBECONFIG env variable
+   export KUBECONFIG=$KUBECONFIG:~/.kube/config
+   //verify that the final config is merged
+   kubectl config view
+   //verify the currnet context set
+   kubectl config view --minify
+    
+    
+    
+    
     
     
     
