@@ -11,3 +11,115 @@ When you need to set up a continuous delivery (CD) pipeline, deploying Jenkins o
 When your build process uses containers, one virtual host can run jobs on multiple operating systems. Kubernetes Engine provides ephemeral build executors — these are only utilized when builds are actively running, which leaves resources for other cluster tasks such as batch processing jobs. Another benefit of ephemeral build executors is speed — they launch in a matter of seconds.
 
 Kubernetes Engine also comes pre-equipped with Google's global load balancer, which you can use to automate web traffic routing to your instance(s). The load balancer handles SSL termination and utilizes a global IP address that's configured with Google's backbone network—coupled with your web front, this load balancer will always set your users on the fastest possible path to an application instance.
+
+
+Lets begin creating a CI/CD piple for kubernetes and GCP
+
+Activate Google Cloud Shell
+Google Cloud Shell is a virtual machine that is loaded with development tools.
+It offers a persistent 5GB home directory and runs on the Google Cloud. 
+Google Cloud Shell provides command-line access to your GCP resources.
+
+
+Launch gcloud shell
+
+You can list the active account name with this command:
+gcloud auth list
+
+List project
+gcloud config list project
+
+Set your zone 
+gcloud config set compute/zone us-central1-f
+
+Clone repository
+git clone https://github.com/GoogleCloudPlatform/continuous-deployment-on-kubernetes.git
+
+cd continuous-deployment-on-kubernetes
+
+
+Provisioning Jenkins
+Creating a Kubernetes cluster
+
+gcloud container clusters create jenkins-cd \
+--num-nodes 2 \
+--machine-type n1-standard-2 \
+--scopes "https://www.googleapis.com/auth/projecthosting,cloud-platform" 
+
+Step takes sometime to complete
+
+Before continuing, confirm that your cluster is running by running the following command:
+
+gcloud container clusters list
+
+Now, get the credentials for your cluster:
+
+gcloud container clusters get-credentials jenkins-cd
+
+Kubernetes Engine uses these credentials to access your newly provisioned cluster—confirm that you can connect to it by running the following command:
+
+kubectl cluster-info
+
+
+Install Helm
+Download and install the helm binary:
+wget https://storage.googleapis.com/kubernetes-helm/helm-v2.14.1-linux-amd64.tar.gz
+
+Unzip
+tar zxfv helm-v2.14.1-linux-amd64.tar.gz
+cp linux-amd64/helm .
+
+Give yourself cluster admin role
+
+kubectl create clusterrolebinding cluster-admin-binding --clusterrole=cluster-admin --user=$(gcloud config get-value account)
+
+Grant Tiller, the server side of Helm, the cluster-admin role in your cluster:
+  kubectl create serviceaccount tiller --namespace kube-system
+  kubectl create clusterrolebinding tiller-admin-binding --clusterrole=cluster-admin --serviceaccount=kube-system:tille
+
+Initialize Helm. This ensures that the server side of Helm (Tiller) is properly installed in your cluster.
+
+  ./helm init --service-account=tiller
+  ./helm update
+  
+  
+Configure and Install Jenkins
+
+se the Helm CLI to deploy the chart with your configuration settings:
+
+./helm install -n cd stable/jenkins -f jenkins/values.yaml --version 1.2.2 --wait
+
+kubectl get pods
+
+Run the following command to setup port forwarding to the Jenkins UI from the Cloud Shell:
+
+export POD_NAME=$(kubectl get pod --selector="app.kubernetes.io/component=jenkins-master,app.kubernetes.io/instance=cd" --output jsonpath='{.items[0].metadata.name}')
+kubectl port-forward $POD_NAME 8080:8080 >> /dev/null &
+
+Now, check that the Jenkins Service was created properly:
+
+kubectl get svc
+
+
+Jenkins chart will automatically create an admin password for you. To retrieve it, run:
+
+printf $(kubectl get secret cd-jenkins -o jsonpath="{.data.jenkins-admin-password}" | base64 --decode);echo
+
+To get to the Jenkins user interface, click on the Web Preview button in cloud shell, then click Preview on port 8080.
+
+Apply the cluster-admin role to the Jenkins service account:
+
+kubectl create clusterrolebinding jenkins-deploy \
+    --clusterrole=cluster-admin --serviceaccount=default:cd-jenkins
+
+
+
+
+
+
+  
+  
+  
+
+
+
