@@ -1,7 +1,7 @@
 # Kubernetes-Notes
 
 ## Core Concepts and Kubectl
-
+- [Kubernetes Architecture](https://kubernetes.io/docs/concepts/architecture/)
 - [Accessing Multiple Clusters](https://kubernetes.io/docs/tasks/access-application-cluster/configure-access-multiple-clusters/)
 - [Accessing Cluster with API](https://kubernetes.io/docs/tasks/access-application-cluster/access-cluster/)
 - [Port Forwarding](https://kubernetes.io/docs/tasks/access-application-cluster/port-forward-access-application-cluster/)
