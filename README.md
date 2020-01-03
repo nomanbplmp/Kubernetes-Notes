@@ -2,6 +2,7 @@
 
 ## Core Concepts and Kubectl
 - [Kubernetes Architecture](https://kubernetes.io/docs/concepts/architecture/)
+- [Kubernetes manage Objects](https://kubernetes.io/docs/tasks/manage-kubernetes-objects/declarative-config/)
 - [Accessing Multiple Clusters](https://kubernetes.io/docs/tasks/access-application-cluster/configure-access-multiple-clusters/)
 - [Accessing Cluster with API](https://kubernetes.io/docs/tasks/access-application-cluster/access-cluster/)
 - [Port Forwarding](https://kubernetes.io/docs/tasks/access-application-cluster/port-forward-access-application-cluster/)
