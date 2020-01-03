@@ -1,4 +1,4 @@
-# Kubernetes-Notes
+# Kubernetes Reads
 
 ## Core Concepts and Kubectl
 - [Kubernetes Architecture](https://kubernetes.io/docs/concepts/architecture/)
